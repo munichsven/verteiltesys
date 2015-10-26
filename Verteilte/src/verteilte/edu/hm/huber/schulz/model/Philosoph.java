@@ -1,5 +1,6 @@
 package verteilte.edu.hm.huber.schulz.model;
 
+import java.util.Observable;
 import java.util.Observer;
 
 public class Philosoph extends Thread implements Observer{
@@ -87,5 +88,11 @@ public class Philosoph extends Thread implements Observer{
 	 */
 	public boolean isHungry() {
 		return hungry;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 }
