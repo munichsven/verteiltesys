@@ -1,4 +1,4 @@
-package verteile.krasses.team.controller;
+package verteilte.edu.hm.huber.schulz.controller;
 
 public class Controller {
 
