@@ -42,7 +42,7 @@ public class Controller {
 		}
 		
 		for(int i = 0; i < philosoph;i++){
-			Philosoph phil = new Philosoph(randomHungry(), i+1);
+			Philosoph phil = new Philosoph(randomHungry(), i+1, masterList);
 			philosphenList.add(phil);
 		}
 	}

@@ -2,7 +2,7 @@ package verteilte.edu.hm.huber.schulz.model;
 
 import java.util.Observable;
 
-public class MasterOfSeat extends Observable {
+public class MasterOfSeat {
 
 	private final Seat seat;
 	
@@ -26,8 +26,6 @@ public class MasterOfSeat extends Observable {
 	public void releaseSeat(){
 		this.seat.setReserved(false);
 		//Gäste über freien Platz informieren
-		setChanged();
-		notifyObservers(this.seat.getId()); //teilt allen observern die id des aktuell freigewordenen Tisches mit
 	}
 
 	public Philosoph getCurrentGuest() {
@@ -41,11 +39,6 @@ public class MasterOfSeat extends Observable {
 	public Seat getSeat() {
 		return seat;
 	}
-
-	public int getId() {
-		return id;
-	}
-	
 	
 
 }
