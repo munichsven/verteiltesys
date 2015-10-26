@@ -1,6 +1,7 @@
 package verteilte.edu.hm.huber.schulz.controller;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import verteilte.edu.hm.huber.schulz.model.MasterOfSeat;
 import verteilte.edu.hm.huber.schulz.model.Philosoph;
@@ -18,12 +19,16 @@ public class Controller {
 	private ArrayList<Philosoph> philosphenList;
 	private final int seat;
 	private final int philosoph;
-	private final int hungryPeople;
+	private int hungryPeople;
+	private Random random;
+	private final int maxHungryPeople;
 	
-	public Controller(final int seat, final int philosoph, final int hungryPeople){
+	public Controller(final int seat, final int philosoph, final int maxHungryPeople){
 		this.seat = seat;
 		this.philosoph = philosoph;
-		this.hungryPeople = hungryPeople;
+		this.maxHungryPeople = maxHungryPeople;
+		random = new Random();
+		hungryPeople = 0;
 		
 		masterList = new ArrayList<MasterOfSeat>();
 		philosphenList = new ArrayList<Philosoph>();
@@ -31,15 +36,32 @@ public class Controller {
 		
 		for(int i = 0 ; i < seat; i++){
 			Seat newSeat = new Seat(i+1);
-			MasterOfSeat master = new MasterOfSeat(newSeat);
+			MasterOfSeat master = new MasterOfSeat(newSeat, i+1);
 			masterList.add(master);
 			seatList.add(newSeat);
 		}
 		
 		for(int i = 0; i < philosoph;i++){
-			Philosoph phil = new Philosoph(false, i+1);
+			Philosoph phil = new Philosoph(randomHungry(), i+1);
 			philosphenList.add(phil);
 		}
+	}
+	
+	/**
+	 * Überprüft ob die Maximale Anzahl von hungrigen Philosophen erreicht ist, wenn nicht wird
+	 * ein Random boolean zurück gegeben.
+	 * @return hungry - gibt zurück ob der Philosoph hungrig ist oder nicht.
+	 */
+	private boolean randomHungry(){
+		final boolean hungry;
+		if(hungryPeople < maxHungryPeople ){
+			hungry = random.nextBoolean();
+			
+			if(hungry){hungryPeople++;}
+			
+			return hungry;
+		}
+		else return false;
 	}
 	
 	public ArrayList<Seat> getSeatList() {
@@ -60,5 +82,4 @@ public class Controller {
 	public void setPhilosphenList(ArrayList<Philosoph> philosphenList) {
 		this.philosphenList = philosphenList;
 	}
-
 }
