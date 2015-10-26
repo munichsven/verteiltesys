@@ -1,6 +1,8 @@
 package verteilte.edu.hm.huber.schulz.model;
 
-public class Philosoph extends Thread{
+import java.util.Observer;
+
+public class Philosoph extends Thread implements Observer{
 	
 	private final int name;
 	private int counter;
@@ -55,7 +57,11 @@ public class Philosoph extends Thread{
 	 * Wenn der Philosoph gegessen hat wird der counter um 1 erhöht.
 	 */
 	public void eat(){
-		counter++;
+		
+		
+		
+		
+		counter++; //nach erfolgreichem Essvorgang
 	}
 
 	/**
