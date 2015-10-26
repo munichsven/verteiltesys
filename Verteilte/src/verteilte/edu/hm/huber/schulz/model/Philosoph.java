@@ -4,16 +4,51 @@ public class Philosoph extends Thread{
 	
 	private final int name;
 	private int counter;
-	private final boolean ishungry;
+	private final boolean hungry;
+	private final int eatMax;
 	
-	public Philosoph(final boolean ishungry){
-		this.ishungry = ishungry;
+	public Philosoph(final boolean hungry, final int name){
+		this.hungry = hungry;
 		counter = 0;
-		name = setName();
+		this.name = name;
+		if(this.isHungry())eatMax = 10;
+		else eatMax = 3;
 	}
 	
-	public static int setName(){
-		return 0;
+	public void run(){
+		while(true){
+			
+			for(int i = 0; i < eatMax; i++){
+				meditate();
+				eat();
+			}
+
+			regenerate();
+		}
+	}
+	
+	/**
+	 * Setzt den Philosophen zum schlafen für eine Sekunde
+	 */
+	public void regenerate(){
+		try {
+			this.sleep(1000);
+		} catch (InterruptedException e) {
+			System.out.println("Fehler schlafen: "+this.getPhilosophsId() + "Thread");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Setzt den Philosophen zum medidieren für zwei Sekunden
+	 */
+	public void meditate(){
+		try {
+			this.sleep(2000);
+		} catch (InterruptedException e) {
+			System.out.println("Fehler meditieren: "+this.getPhilosophsId() + "Thread");
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -44,8 +79,7 @@ public class Philosoph extends Thread{
 	/**
 	 * @return ishungry - gibt an Ob der Philosoph hungrig ist.
 	 */
-	public boolean isIshungry() {
-		return ishungry;
+	public boolean isHungry() {
+		return hungry;
 	}
-
 }
