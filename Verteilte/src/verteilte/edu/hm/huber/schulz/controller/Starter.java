@@ -6,6 +6,7 @@ public class Starter {
 	
 	public static void main(String args[]){
 		
+		/*
 		Scanner scanner = new Scanner(System.in);
 		
 		System.out.println("Bitte geben sie die gewünschte Anzahl an Philosophe ein: ");
@@ -20,8 +21,9 @@ public class Starter {
 		if(hungry > phil){
 			hungry = phil;
 		}
+		*/
 		
-		Controller controller = new Controller(phil, seat, hungry);
+		Controller controller = new Controller(2, 5, 0);
 	}
 
 }
