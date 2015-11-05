@@ -58,22 +58,6 @@ public class Philosoph extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
-	private Seat findSeat(final int startIndex,  int index){
-		//TODO: Tritt enventuell Fehler auf wenn random == seatList.size ist
-		Seat crntSeat = null;
-		
-		crntSeat = seatList.get(index);
-		System.out.println("Philosoph: " + this.getPhilosophsId()
-		+ " frägt an: Platz " + crntSeat.getId());
-		
-		//Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um wieder beim Anfang anzufangen
-		if(index == seatList.size()){
-			index = 0;
-		}
-			
-		return crntSeat;
-	}
 
 	/**
 	 * Wenn der Philosoph gegessen hat wird der counter um 1 erhöht.
@@ -83,8 +67,18 @@ public class Philosoph extends Thread {
 		Seat crntSeat = null;
 		final int startIndex = random.nextInt(seatList.size());
 		int index = startIndex;
+		
 		while (!seatFound) {
-			seatFound = findSeat(startIndex,index).getSemaphore().tryAcquire();
+			crntSeat = seatList.get(index);
+			System.out.println("Philosoph: " + this.getPhilosophsId()
+			+ " frägt an: Platz " + crntSeat.getId());
+			
+			//Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um wieder beim Anfang anzufangen
+			if(index == seatList.size()){
+				index = 0;
+			}
+			
+			seatFound = crntSeat.getSemaphore().tryAcquire();
 			//TODO: stimmt das mit INDEX ++ dort.
 			index++;
 			//Schwellwert, sodass nach n*2 Probiervorängen geblockt wird
