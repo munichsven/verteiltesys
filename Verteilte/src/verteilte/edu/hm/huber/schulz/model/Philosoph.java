@@ -29,7 +29,10 @@ public class Philosoph extends Thread {
 		while (true) {
 			meditate();
 			eat();
-			//regenerate();
+			//Wenn der Philosph 5 mal gegessen hat wird er schlafen gelegt
+//			if(getCounter() == eatMax){
+//				regenerate();
+//			}
 		}
 	}
 
@@ -73,14 +76,14 @@ public class Philosoph extends Thread {
 			System.out.println("Philosoph: " + this.getPhilosophsId()
 			+ " frägt an: Platz " + crntSeat.getId());
 			
+			seatFound = crntSeat.getSemaphore().tryAcquire();
+			
 			//Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um wieder beim Anfang anzufangen
 			if(index == seatList.size()){
 				index = 0;
 			}
-			
-			seatFound = crntSeat.getSemaphore().tryAcquire();
-			//TODO: stimmt das mit INDEX ++ dort.
-			index++;
+			else{
+				index++;}
 			//Schwellwert, sodass nach n*2 Probiervorängen geblockt wird
 			//Phils anschließend in SEGMENTIERTE Warteliste z.B. n/2 die dann echt gleichzeitig
 			//notified werden können
@@ -92,6 +95,7 @@ public class Philosoph extends Thread {
 			}
 		}
 		// versuchen die Gabeln aufzunehmen
+		crntSeat.getLeft().isUsed();
 		// TODO
 		try {
 			Thread.sleep(100);

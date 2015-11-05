@@ -32,6 +32,7 @@ public class Controller {
 		seatList = new ArrayList<Seat>();
 
 		for (int i = 0; i < seatCount; i++) {
+			//TODO: Linke u. Rechte Gabel müssen übergeben werden
 			Seat newSeat = new Seat(i + 1, null, null);
 			seatList.add(newSeat);
 		}
