@@ -1,10 +1,7 @@
 package verteilte.edu.hm.huber.schulz.model;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class Philosoph extends Thread {
 

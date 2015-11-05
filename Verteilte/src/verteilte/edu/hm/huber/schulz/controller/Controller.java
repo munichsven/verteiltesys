@@ -21,8 +21,7 @@ public class Controller {
 	private Random random;
 	private final int maxHungryPeople;
 
-	public Controller(final int seat, final int philosoph,
-			final int maxHungryPeople) {
+	public Controller(final int seat, final int philosoph, final int maxHungryPeople) {
 		this.seatCount = seat;
 		this.philosophCount = philosoph;
 		this.maxHungryPeople = maxHungryPeople;
@@ -33,7 +32,7 @@ public class Controller {
 		seatList = new ArrayList<Seat>();
 
 		for (int i = 0; i < seatCount; i++) {
-			Seat newSeat = new Seat(i + 1);
+			Seat newSeat = new Seat(i + 1, null, null);
 			seatList.add(newSeat);
 		}
 

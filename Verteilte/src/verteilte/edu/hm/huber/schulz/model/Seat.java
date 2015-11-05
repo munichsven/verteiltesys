@@ -13,11 +13,15 @@ public class Seat {
 	private boolean inUse;
 
 	private final Semaphore semaphore;
+	private final Fork right;
+	private final Fork left;
 
-	public Seat(final int id) {
+	public Seat(final int id, final Fork right, final Fork left) {
 		this.id = id;
 		this.inUse = false;
 		this.reserved = false;
+		this.right = right;
+		this.left = left;
 		this.semaphore = new Semaphore(1);
 	}
 
@@ -43,5 +47,13 @@ public class Seat {
 
 	public Semaphore getSemaphore() {
 		return semaphore;
+	}
+
+	public Fork getRight() {
+		return right;
+	}
+
+	public Fork getLeft() {
+		return left;
 	}
 }
