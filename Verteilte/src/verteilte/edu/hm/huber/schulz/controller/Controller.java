@@ -54,8 +54,8 @@ public class Controller {
 			phil.start();
 		}
 		
-	//	TableMaster master = new TableMaster(philosphenList);
-	//	master.start();
+	TableMaster master = new TableMaster(philosphenList);
+	master.start();
 	}
 
 	/**

@@ -17,25 +17,24 @@ public class Philosoph extends Thread {
 	public Philosoph(final boolean hungry, final int name,
 			final ArrayList<Seat> seatList) {
 		this.hungry = hungry;
-		this.counter = 0;
-		this.eatCounter = 0;
+		counter = 0;
+		eatCounter = 0;
 		this.name = name;
-		if (this.isHungry())
-			eatMax = 10;
+		if (isHungry())
+			eatMax = Constants.EAT_MAX_HUNGRY;
 		else
-			eatMax = 3;
+			eatMax = Constants.EAT_MAX_NORMAL;
 		this.seatList = seatList;
-		this.random = new Random();
+		random = new Random();
 	}
 
 	public void run() {
 		while (true) {
 			meditate();
 			eat();
-			// Wenn der Philosph 5 mal gegessen hat wird er schlafen gelegt
-			if(getCounter() == eatMax){
+			if (counter == eatMax) {
 				regenerate();
-				this.counter = 0;
+				counter = 0;
 			}
 		}
 	}
@@ -45,9 +44,9 @@ public class Philosoph extends Thread {
 	 */
 	public void regenerate() {
 		try {
-			this.sleep(1000);
+			Thread.sleep(Constants.SLEEP_LENGTH);
 		} catch (InterruptedException e) {
-			System.out.println("Fehler schlafen: " + this.getPhilosophsId()
+			System.out.println("Fehler schlafen: " + getPhilosophsId()
 					+ "Thread");
 			e.printStackTrace();
 		}
@@ -58,9 +57,9 @@ public class Philosoph extends Thread {
 	 */
 	public void meditate() {
 		try {
-			this.sleep(1);
+			Thread.sleep(Constants.MEDITATE_LENGTH);
 		} catch (InterruptedException e) {
-			System.out.println("Fehler meditieren: " + this.getPhilosophsId()
+			System.out.println("Fehler meditieren: " + getPhilosophsId()
 					+ "Thread");
 			e.printStackTrace();
 		}
@@ -77,9 +76,6 @@ public class Philosoph extends Thread {
 
 		while (!seatFound) {
 			crntSeat = seatList.get(index);
-			// System.out.println("Philosoph: " + this.getPhilosophsId()
-			// + " frägt an: Platz " + crntSeat.getId());
-
 			seatFound = crntSeat.getSemaphore().tryAcquire();
 
 			// Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um
@@ -95,23 +91,20 @@ public class Philosoph extends Thread {
 			// notified werden können
 			// TODO
 		}
-		// versuchen die Gabeln aufzunehmen
 		getForks(crntSeat);
-		// TODO
 		try {
 			Thread.sleep(5);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		crntSeat.getLeft().getSemaphore().release();
 		crntSeat.getRight().getSemaphore().release();
 		crntSeat.getSemaphore().release();
-		counter++; // nach erfolgreichem Essvorgang
+		counter++;
 		eatCounter++;
-		System.out.println("Philosoph " + this.getPhilosophsId()
-				+ " hat an Platz " + crntSeat.getId() + " zum insg. " + eatCounter
-				+ ". mal gegessen.  :" + this.isHungry());
+		System.out.println("Philosoph " + getPhilosophsId() + " hat an Platz "
+				+ crntSeat.getId() + " zum insg. " + eatCounter
+				+ ". mal gegessen.  :" + isHungry());
 	}
 
 	private boolean getForks(final Seat seat) {
@@ -133,10 +126,10 @@ public class Philosoph extends Thread {
 					e.printStackTrace();
 				}
 			}
-			while (!hasRight && tries <= 5) {
+			while (!hasRight && tries <= Constants.TRIES_TO_GET_FORK) {
 				try {
-					// TODO Essenszeit aus Konstante holen
-					hasRight = right.getSemaphore().tryAcquire(10,
+					hasRight = right.getSemaphore().tryAcquire(
+							Constants.TIME_TO_GET_RIGHT_FORK,
 							TimeUnit.MILLISECONDS);
 					tries++;
 				} catch (InterruptedException e) {
@@ -146,29 +139,23 @@ public class Philosoph extends Thread {
 			}
 			hasBoth = hasRight;
 			if (!hasBoth) {
-				// left.getSemaphore().release();
+				left.getSemaphore().release();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(Constants.TIME_UNTIL_NEW_FORKTRY);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
-
-		left.getSemaphore().release();
 		return hasBoth;
 	}
 
 	/**
 	 * @return counter - gibt den Aktuellen Essenstand des Philosophen zurück.
 	 */
-	public int getCounter() {
-		return counter;
-	}
-
-	public void setCounter(int counter) {
-		this.counter = counter;
+	public int getEatCounter() {
+		return eatCounter;
 	}
 
 	/**

@@ -2,10 +2,6 @@ package verteilte.edu.hm.huber.schulz.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class TableMaster extends Thread {
 
@@ -22,15 +18,15 @@ public class TableMaster extends Thread {
 			int[] crntCounts = new int[philList.size()];
 			int i = 0;
 			for (Philosoph crntPhil : philList) {
-				crntCounts[i] = crntPhil.getCounter();
+				crntCounts[i] = crntPhil.getEatCounter();
 				i++;
 			}
 			Arrays.sort(crntCounts);
 			minCount = crntCounts[0];
 			for (Philosoph crntPhil : philList) {
-				if (crntPhil.getCounter() > minCount + Constants.DIFFERENZ) {
+				if (crntPhil.getEatCounter() > minCount + Constants.DIFFERENZ) {
 					//crntPhil.interrupt();
-					System.out.println("Phil " + crntPhil.getId() + " interrupted mit " + crntPhil.getCounter() + " / " + minCount);
+					System.out.println("Phil " + crntPhil.getId() + " interrupted mit " + crntPhil.getEatCounter() + " / " + minCount);
 				}
 			}
 		}

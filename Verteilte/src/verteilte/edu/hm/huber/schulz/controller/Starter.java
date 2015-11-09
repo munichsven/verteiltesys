@@ -1,6 +1,5 @@
 package verteilte.edu.hm.huber.schulz.controller;
 
-import java.util.Scanner;
 
 public class Starter {
 	
