@@ -6,6 +6,7 @@ import java.util.Random;
 import verteilte.edu.hm.huber.schulz.model.Fork;
 import verteilte.edu.hm.huber.schulz.model.Philosoph;
 import verteilte.edu.hm.huber.schulz.model.Seat;
+import verteilte.edu.hm.huber.schulz.model.TableMaster;
 
 /**
  * 
@@ -52,6 +53,9 @@ public class Controller {
 			philosphenList.add(phil);
 			phil.start();
 		}
+		
+	//	TableMaster master = new TableMaster(philosphenList);
+	//	master.start();
 	}
 
 	/**

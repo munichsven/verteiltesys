@@ -23,7 +23,7 @@ public class Starter {
 		}
 		*/
 		
-		Controller controller = new Controller(2, 5, 0);
+		Controller controller = new Controller(3, 5, 2);
 	}
 
 }

@@ -4,6 +4,6 @@ public class Constants {
 
 	public static final int EAT_LENGTH = 500;
 	
-	public static final int DIFFERENZ = 10;
+	public static final int DIFFERENZ = 50;
 	
 }

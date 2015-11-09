@@ -8,6 +8,7 @@ public class Philosoph extends Thread {
 
 	private final int name;
 	private int counter;
+	private int eatCounter;
 	private final boolean hungry;
 	private final int eatMax;
 	private final ArrayList<Seat> seatList;
@@ -17,6 +18,7 @@ public class Philosoph extends Thread {
 			final ArrayList<Seat> seatList) {
 		this.hungry = hungry;
 		this.counter = 0;
+		this.eatCounter = 0;
 		this.name = name;
 		if (this.isHungry())
 			eatMax = 10;
@@ -31,9 +33,10 @@ public class Philosoph extends Thread {
 			meditate();
 			eat();
 			// Wenn der Philosph 5 mal gegessen hat wird er schlafen gelegt
-			// if(getCounter() == eatMax){
-			// regenerate();
-			// }
+			if(getCounter() == eatMax){
+				regenerate();
+				this.counter = 0;
+			}
 		}
 	}
 
@@ -55,7 +58,7 @@ public class Philosoph extends Thread {
 	 */
 	public void meditate() {
 		try {
-			this.sleep(0);
+			this.sleep(1);
 		} catch (InterruptedException e) {
 			System.out.println("Fehler meditieren: " + this.getPhilosophsId()
 					+ "Thread");
@@ -96,7 +99,7 @@ public class Philosoph extends Thread {
 		getForks(crntSeat);
 		// TODO
 		try {
-			Thread.sleep(10);
+			Thread.sleep(5);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,9 +108,10 @@ public class Philosoph extends Thread {
 		crntSeat.getRight().getSemaphore().release();
 		crntSeat.getSemaphore().release();
 		counter++; // nach erfolgreichem Essvorgang
+		eatCounter++;
 		System.out.println("Philosoph " + this.getPhilosophsId()
-				+ " hat an Platz " + crntSeat.getId() + " zum insg. " + counter
-				+ ". mal gegessen.");
+				+ " hat an Platz " + crntSeat.getId() + " zum insg. " + eatCounter
+				+ ". mal gegessen.  :" + this.isHungry());
 	}
 
 	private boolean getForks(final Seat seat) {
@@ -116,14 +120,14 @@ public class Philosoph extends Thread {
 		boolean hasLeft = false;
 		boolean hasRight = false;
 		boolean hasBoth = false;
-		int tries = 0;
 
 		while (!hasBoth) {
+			int tries = 0;
 			while (!hasLeft) {
 				try {
 					// TODO Essenszeit aus Konstante holen
-					hasLeft = left.getSemaphore().tryAcquire(
-							Constants.EAT_LENGTH / 10, TimeUnit.MILLISECONDS);
+					hasLeft = left.getSemaphore().tryAcquire(1,
+							TimeUnit.MILLISECONDS);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -132,8 +136,8 @@ public class Philosoph extends Thread {
 			while (!hasRight && tries <= 5) {
 				try {
 					// TODO Essenszeit aus Konstante holen
-					hasRight = right.getSemaphore().tryAcquire(
-							Constants.EAT_LENGTH / 10, TimeUnit.MILLISECONDS);
+					hasRight = right.getSemaphore().tryAcquire(10,
+							TimeUnit.MILLISECONDS);
 					tries++;
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -141,16 +145,18 @@ public class Philosoph extends Thread {
 				}
 			}
 			hasBoth = hasRight;
-			if(!hasBoth){
-				left.getSemaphore().release();
+			if (!hasBoth) {
+				// left.getSemaphore().release();
 				try {
-					Thread.sleep(Constants.EAT_LENGTH/20);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
+
+		left.getSemaphore().release();
 		return hasBoth;
 	}
 
