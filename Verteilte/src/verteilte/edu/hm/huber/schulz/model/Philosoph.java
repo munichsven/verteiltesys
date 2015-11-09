@@ -2,6 +2,7 @@ package verteilte.edu.hm.huber.schulz.model;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Philosoph extends Thread {
 
@@ -29,10 +30,10 @@ public class Philosoph extends Thread {
 		while (true) {
 			meditate();
 			eat();
-			//Wenn der Philosph 5 mal gegessen hat wird er schlafen gelegt
-//			if(getCounter() == eatMax){
-//				regenerate();
-//			}
+			// Wenn der Philosph 5 mal gegessen hat wird er schlafen gelegt
+			// if(getCounter() == eatMax){
+			// regenerate();
+			// }
 		}
 	}
 
@@ -54,7 +55,7 @@ public class Philosoph extends Thread {
 	 */
 	public void meditate() {
 		try {
-			this.sleep(2000);
+			this.sleep(0);
 		} catch (InterruptedException e) {
 			System.out.println("Fehler meditieren: " + this.getPhilosophsId()
 					+ "Thread");
@@ -70,44 +71,87 @@ public class Philosoph extends Thread {
 		Seat crntSeat = null;
 		final int startIndex = random.nextInt(seatList.size());
 		int index = startIndex;
-		
+
 		while (!seatFound) {
 			crntSeat = seatList.get(index);
-			System.out.println("Philosoph: " + this.getPhilosophsId()
-			+ " frägt an: Platz " + crntSeat.getId());
-			
+			// System.out.println("Philosoph: " + this.getPhilosophsId()
+			// + " frägt an: Platz " + crntSeat.getId());
+
 			seatFound = crntSeat.getSemaphore().tryAcquire();
-			
-			//Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um wieder beim Anfang anzufangen
-			if(index == seatList.size()){
+
+			// Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um
+			// wieder beim Anfang anzufangen
+			if (index == seatList.size() - 1) {
 				index = 0;
+			} else {
+				index++;
 			}
-			else{
-				index++;}
-			//Schwellwert, sodass nach n*2 Probiervorängen geblockt wird
-			//Phils anschließend in SEGMENTIERTE Warteliste z.B. n/2 die dann echt gleichzeitig
-			//notified werden können
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			// Schwellwert, sodass nach n*2 Probiervorängen geblockt wird
+			// Phils anschließend in SEGMENTIERTE Warteliste z.B. n/2 die dann
+			// echt gleichzeitig
+			// notified werden können
+			// TODO
 		}
 		// versuchen die Gabeln aufzunehmen
-		crntSeat.getLeft().isUsed();
+		getForks(crntSeat);
 		// TODO
 		try {
-			Thread.sleep(100);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		crntSeat.getLeft().getSemaphore().release();
+		crntSeat.getRight().getSemaphore().release();
 		crntSeat.getSemaphore().release();
 		counter++; // nach erfolgreichem Essvorgang
 		System.out.println("Philosoph " + this.getPhilosophsId()
 				+ " hat an Platz " + crntSeat.getId() + " zum insg. " + counter
 				+ ". mal gegessen.");
+	}
+
+	private boolean getForks(final Seat seat) {
+		Fork left = seat.getLeft();
+		Fork right = seat.getRight();
+		boolean hasLeft = false;
+		boolean hasRight = false;
+		boolean hasBoth = false;
+		int tries = 0;
+
+		while (!hasBoth) {
+			while (!hasLeft) {
+				try {
+					// TODO Essenszeit aus Konstante holen
+					hasLeft = left.getSemaphore().tryAcquire(
+							Constants.EAT_LENGTH / 10, TimeUnit.MILLISECONDS);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			while (!hasRight && tries <= 5) {
+				try {
+					// TODO Essenszeit aus Konstante holen
+					hasRight = right.getSemaphore().tryAcquire(
+							Constants.EAT_LENGTH / 10, TimeUnit.MILLISECONDS);
+					tries++;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			hasBoth = hasRight;
+			if(!hasBoth){
+				left.getSemaphore().release();
+				try {
+					Thread.sleep(Constants.EAT_LENGTH/20);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return hasBoth;
 	}
 
 	/**

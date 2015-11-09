@@ -3,6 +3,7 @@ package verteilte.edu.hm.huber.schulz.controller;
 import java.util.ArrayList;
 import java.util.Random;
 
+import verteilte.edu.hm.huber.schulz.model.Fork;
 import verteilte.edu.hm.huber.schulz.model.Philosoph;
 import verteilte.edu.hm.huber.schulz.model.Seat;
 
@@ -15,6 +16,7 @@ public class Controller {
 
 	private ArrayList<Seat> seatList;
 	private ArrayList<Philosoph> philosphenList;
+	private ArrayList<Fork> forkList;
 	private final int seatCount;
 	private final int philosophCount;
 	private int hungryPeople;
@@ -30,10 +32,18 @@ public class Controller {
 
 		philosphenList = new ArrayList<Philosoph>();
 		seatList = new ArrayList<Seat>();
+		forkList = new ArrayList<Fork>();
 
+		for(int i = 0; i < seatCount; i++ ){
+			Fork newFork = new Fork(i + 1);
+			forkList.add(newFork);
+		}
 		for (int i = 0; i < seatCount; i++) {
-			//TODO: Linke u. Rechte Gabel müssen übergeben werden
-			Seat newSeat = new Seat(i + 1, null, null);
+			int j = i + 1;
+			if(j == forkList.size()){
+				j = 0;
+			}
+			Seat newSeat = new Seat(i + 1, forkList.get(i), forkList.get(j));
 			seatList.add(newSeat);
 		}
 
