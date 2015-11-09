@@ -41,7 +41,7 @@ public class Philosoph extends Thread {
 	}
 
 	/**
-	 * Setzt den Philosophen zum schlafen für eine Sekunde
+	 * Setzt den Philosophen zum schlafen für eine Sekund?
 	 */
 	public void regenerate() {
 		try {
