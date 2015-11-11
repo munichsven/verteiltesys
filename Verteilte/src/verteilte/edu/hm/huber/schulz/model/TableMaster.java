@@ -3,6 +3,11 @@ package verteilte.edu.hm.huber.schulz.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Achtet darauf, dass Essverhalten einzelner Threads nicht ausartet.
+ * @author ifw12043
+ *
+ */
 public class TableMaster extends Thread {
 
 	private ArrayList<Philosoph> philList;
@@ -32,7 +37,7 @@ public class TableMaster extends Thread {
 			try {
 				Thread.sleep(Constants.EAT_LENGTH);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				System.out.println("Tablemaster unterbrochen!");
 				e.printStackTrace();
 			}
 		}

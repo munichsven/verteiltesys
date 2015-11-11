@@ -41,7 +41,7 @@ public class Philosoph extends Thread {
 	}
 
 	/**
-	 * Setzt den Philosophen zum schlafen für eine Sekund?
+	 * Philosoph schläft.
 	 */
 	public void regenerate() {
 		try {
@@ -51,22 +51,8 @@ public class Philosoph extends Thread {
 		}
 	}
 
-	private void banFromTable() {
-		banned = true;
-		System.out.println(this.name + " interrupted");
-		try {
-			long start = System.currentTimeMillis();
-			Thread.sleep(Constants.EAT_LENGTH * Constants.BAN_FACTOR);
-			long end = System.currentTimeMillis();
-			System.out.println(this.name + " war verbannt für " + (end-start));
-		} catch (InterruptedException e) {
-			System.out.println("ERROR");
-		}
-		banned = false;
-	}
-
 	/**
-	 * Setzt den Philosophen zum medidieren für zwei Sekunden
+	 * Philosoph meditiert.
 	 */
 	public void meditate() {
 		try {
@@ -118,47 +104,6 @@ public class Philosoph extends Thread {
 				+ ". mal gegessen.  :" + isHungry());
 	}
 
-	private boolean getForks(final Seat seat) {
-		Fork left = seat.getLeft();
-		Fork right = seat.getRight();
-		boolean hasLeft = false;
-		boolean hasRight = false;
-		boolean hasBoth = false;
-
-		while (!hasBoth) {
-			int tries = 0;
-			while (!hasLeft) {
-				try {
-					// TODO Essenszeit aus Konstante holen
-					hasLeft = left.getSemaphore().tryAcquire(1,
-							TimeUnit.MILLISECONDS);
-				} catch (InterruptedException e) {
-					banFromTable();
-				}
-			}
-			while (!hasRight && tries <= Constants.TRIES_TO_GET_FORK) {
-				try {
-					hasRight = right.getSemaphore().tryAcquire(
-							Constants.TIME_TO_GET_RIGHT_FORK,
-							TimeUnit.MILLISECONDS);
-					tries++;
-				} catch (InterruptedException e) {
-					banFromTable();
-				}
-			}
-			hasBoth = hasRight;
-			if (!hasBoth) {
-				left.getSemaphore().release();
-				try {
-					Thread.sleep(Constants.TIME_UNTIL_NEW_FORKTRY);
-				} catch (InterruptedException e) {
-					banFromTable();
-				}
-			}
-		}
-		return hasBoth;
-	}
-
 	/**
 	 * @return counter - gibt den Aktuellen Essenstand des Philosophen zurück.
 	 */
@@ -186,6 +131,61 @@ public class Philosoph extends Thread {
 
 	public void setBanned(boolean banned) {
 		this.banned = banned;
+	}
+
+	private void banFromTable() {
+		banned = true;
+		System.out.println(this.name + " interrupted");
+		try {
+			long start = System.currentTimeMillis();
+			Thread.sleep(Constants.EAT_LENGTH * Constants.BAN_FACTOR);
+			long end = System.currentTimeMillis();
+			System.out
+					.println(this.name + " war verbannt für " + (end - start));
+		} catch (InterruptedException e) {
+			System.out.println("ERROR");
+		}
+		banned = false;
+	}
+
+	private boolean getForks(final Seat seat) {
+		Fork left = seat.getLeft();
+		Fork right = seat.getRight();
+		boolean hasLeft = false;
+		boolean hasRight = false;
+		boolean hasBoth = false;
+
+		while (!hasBoth) {
+			int tries = 0;
+			while (!hasLeft) {
+				try {
+					hasLeft = left.getSemaphore().tryAcquire(1,
+							TimeUnit.MILLISECONDS);
+				} catch (InterruptedException e) {
+					banFromTable();
+				}
+			}
+			while (!hasRight && tries <= Constants.TRIES_TO_GET_FORK) {
+				try {
+					hasRight = right.getSemaphore().tryAcquire(
+							Constants.TIME_TO_GET_RIGHT_FORK,
+							TimeUnit.MILLISECONDS);
+					tries++;
+				} catch (InterruptedException e) {
+					banFromTable();
+				}
+			}
+			hasBoth = hasRight;
+			if (!hasBoth) {
+				left.getSemaphore().release();
+				try {
+					Thread.sleep(Constants.TIME_UNTIL_NEW_FORKTRY);
+				} catch (InterruptedException e) {
+					banFromTable();
+				}
+			}
+		}
+		return hasBoth;
 	}
 
 }
