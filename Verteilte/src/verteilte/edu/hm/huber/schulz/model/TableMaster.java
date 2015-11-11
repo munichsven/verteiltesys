@@ -30,7 +30,7 @@ public class TableMaster extends Thread {
 			minCount = crntCounts[0];
 			for (Philosoph crntPhil : philList) {
 				if (crntPhil.getEatCounter() >= minCount + Constants.DIFFERENZ && !crntPhil.isBanned()) {
-					crntPhil.interrupt();
+					//crntPhil.interrupt();
 					crntPhil.setBanned(true);
 					System.out.println("Phil " + crntPhil.getPhilosophsId() + " wird demnächst gebannt! Essvorgänge " + crntPhil.getEatCounter() + " / " + minCount);
 				}

@@ -68,24 +68,33 @@ public class Philosoph extends Thread {
 	public void eat() {
 		boolean seatFound = false;
 		Seat crntSeat = null;
-		final int startIndex = random.nextInt(seatList.size());
+		int seatCount = seatList.size();
+		final int startIndex = random.nextInt(seatCount);
 		int index = startIndex;
-
-		while (!seatFound) {
+		int tries = 0;
+		
+		while (!seatFound && tries < 3*seatCount) {
 			crntSeat = seatList.get(index);
 			seatFound = crntSeat.getSemaphore().tryAcquire();
 
-			if (index == seatList.size() - 1) {
+			if (index == seatCount - 1) {
 				index = 0;
 			} else {
 				index++;
 			}
-			// Schwellwert, sodass nach n*2 Probiervorängen geblockt wird
-			// Phils anschließend in SEGMENTIERTE Warteliste z.B. n/2 die dann
-			// echt gleichzeitig
-			// notified werden können
-			// TODO
+			tries++;
 		}
+		
+		if(!seatFound){
+			crntSeat = seatList.get(startIndex);
+			try {
+				crntSeat.getSemaphore().acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		getForks(crntSeat);
 		threadBreak(Constants.EAT_LENGTH);
 		crntSeat.getLeft().getSemaphore().release();
@@ -137,19 +146,18 @@ public class Philosoph extends Thread {
 	private boolean getForks(final Seat seat) {
 		Fork left = seat.getLeft();
 		Fork right = seat.getRight();
-		boolean hasLeft = false;
 		boolean hasRight = false;
 		boolean hasBoth = false;
 
 		while (!hasBoth) {
 			int tries = 0;
-			while (!hasLeft) {
-				try {
-					hasLeft = left.getSemaphore().tryAcquire(1,
-							TimeUnit.MILLISECONDS);
-				} catch (InterruptedException e) {
-				}
-			}
+					try {
+						left.getSemaphore().acquire();
+					} catch (InterruptedException e1) {
+						System.out.println("This shouldnt happen.");
+						e1.printStackTrace();
+					}
+				
 			while (!hasRight && tries <= Constants.TRIES_TO_GET_FORK) {
 				try {
 					hasRight = right.getSemaphore().tryAcquire(
@@ -178,5 +186,4 @@ public class Philosoph extends Thread {
 		} catch (InterruptedException e) {
 		}
 	}
-
 }

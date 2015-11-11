@@ -22,7 +22,7 @@ public class Starter {
 		}
 		*/
 		
-		Controller controller = new Controller(2, 5, 2);
+		Controller controller = new Controller(5, 5, 3);
 		Thread.sleep(60000);
 		System.exit(0);
 	}

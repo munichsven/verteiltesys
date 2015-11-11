@@ -1,5 +1,7 @@
 package verteilte.edu.hm.huber.schulz.model;
 
+import verteilte.edu.hm.huber.schulz.controller.Controller;
+
 public class Constants {
 
 	public static final long EAT_LENGTH = 1;
@@ -8,7 +10,7 @@ public class Constants {
 	
 	public static final long MEDITATE_LENGTH = 5;
 	
-	public static final int DIFFERENZ = 5;
+	public static final int DIFFERENZ = 20;
 	
 	public static final int TRIES_TO_GET_FORK = 5;
 
