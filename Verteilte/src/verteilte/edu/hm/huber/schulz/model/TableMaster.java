@@ -29,9 +29,14 @@ public class TableMaster extends Thread {
 			Arrays.sort(crntCounts);
 			minCount = crntCounts[0];
 			for (Philosoph crntPhil : philList) {
-				if (crntPhil.getEatCounter() > minCount + Constants.DIFFERENZ && !crntPhil.isBanned()) {
+				if (crntPhil.getEatCounter() >= minCount + Constants.DIFFERENZ && !crntPhil.isBanned()) {
 					crntPhil.interrupt();
-					System.out.println("Phil " + crntPhil.getPhilosophsId() + " interrupted mit " + crntPhil.getEatCounter() + " / " + minCount);
+					crntPhil.setBanned(true);
+					System.out.println("Phil " + crntPhil.getPhilosophsId() + " wird demnächst gebannt! Essvorgänge " + crntPhil.getEatCounter() + " / " + minCount);
+				}
+				else if(crntPhil.getEatCounter() < minCount + Constants.DIFFERENZ && crntPhil.isBanned()){
+					crntPhil.setBanned(false);
+					System.out.println("Phil " + crntPhil.getPhilosophsId() + " wurde entbannt!");
 				}
 			}
 			try {
@@ -41,14 +46,6 @@ public class TableMaster extends Thread {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void setMinCounter(final int counter) {
-		minCount = counter;
-	}
-
-	public int getMinCounter() {
-		return minCount;
 	}
 
 }

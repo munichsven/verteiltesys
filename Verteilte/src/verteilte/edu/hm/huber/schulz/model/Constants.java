@@ -2,13 +2,13 @@ package verteilte.edu.hm.huber.schulz.model;
 
 public class Constants {
 
-	public static final long EAT_LENGTH = 10;
+	public static final long EAT_LENGTH = 1;
 	
 	public static final long SLEEP_LENGTH = 10;
 	
 	public static final long MEDITATE_LENGTH = 5;
 	
-	public static final int DIFFERENZ = 10;
+	public static final int DIFFERENZ = 5;
 	
 	public static final int TRIES_TO_GET_FORK = 5;
 

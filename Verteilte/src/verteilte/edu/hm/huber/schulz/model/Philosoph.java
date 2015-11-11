@@ -31,11 +31,19 @@ public class Philosoph extends Thread {
 
 	public void run() {
 		while (true) {
-			meditate();
-			eat();
-			if (counter == eatMax) {
-				regenerate();
-				counter = 0;
+			if (banned) {
+				System.out.println(this.name + " interrupted");
+				banFromTable();
+				while (banned) {
+					banFromTable();
+				}
+			} else {
+				meditate();
+				eat();
+				if (counter == eatMax) {
+					regenerate();
+					counter = 0;
+				}
 			}
 		}
 	}
@@ -44,22 +52,14 @@ public class Philosoph extends Thread {
 	 * Philosoph schläft.
 	 */
 	public void regenerate() {
-		try {
-			Thread.sleep(Constants.SLEEP_LENGTH);
-		} catch (InterruptedException e) {
-			banFromTable();
-		}
+		threadBreak(Constants.SLEEP_LENGTH);
 	}
 
 	/**
 	 * Philosoph meditiert.
 	 */
 	public void meditate() {
-		try {
-			Thread.sleep(Constants.MEDITATE_LENGTH);
-		} catch (InterruptedException e) {
-			banFromTable();
-		}
+		threadBreak(Constants.MEDITATE_LENGTH);
 	}
 
 	/**
@@ -75,8 +75,6 @@ public class Philosoph extends Thread {
 			crntSeat = seatList.get(index);
 			seatFound = crntSeat.getSemaphore().tryAcquire();
 
-			// Wenn der Index gleich der Größe ist wird er auf 0 gesetzt um
-			// wieder beim Anfang anzufangen
 			if (index == seatList.size() - 1) {
 				index = 0;
 			} else {
@@ -89,11 +87,7 @@ public class Philosoph extends Thread {
 			// TODO
 		}
 		getForks(crntSeat);
-		try {
-			Thread.sleep(Constants.EAT_LENGTH);
-		} catch (InterruptedException e) {
-			banFromTable();
-		}
+		threadBreak(Constants.EAT_LENGTH);
 		crntSeat.getLeft().getSemaphore().release();
 		crntSeat.getRight().getSemaphore().release();
 		crntSeat.getSemaphore().release();
@@ -134,18 +128,10 @@ public class Philosoph extends Thread {
 	}
 
 	private void banFromTable() {
-		banned = true;
-		System.out.println(this.name + " interrupted");
 		try {
-			long start = System.currentTimeMillis();
 			Thread.sleep(Constants.EAT_LENGTH * Constants.BAN_FACTOR);
-			long end = System.currentTimeMillis();
-			System.out
-					.println(this.name + " war verbannt für " + (end - start));
 		} catch (InterruptedException e) {
-			System.out.println("ERROR");
 		}
-		banned = false;
 	}
 
 	private boolean getForks(final Seat seat) {
@@ -162,7 +148,6 @@ public class Philosoph extends Thread {
 					hasLeft = left.getSemaphore().tryAcquire(1,
 							TimeUnit.MILLISECONDS);
 				} catch (InterruptedException e) {
-					banFromTable();
 				}
 			}
 			while (!hasRight && tries <= Constants.TRIES_TO_GET_FORK) {
@@ -172,7 +157,7 @@ public class Philosoph extends Thread {
 							TimeUnit.MILLISECONDS);
 					tries++;
 				} catch (InterruptedException e) {
-					banFromTable();
+					left.getSemaphore().release(); //damit man anderen nach einer Verbannung nicht die gabel wegsperrt
 				}
 			}
 			hasBoth = hasRight;
@@ -181,11 +166,17 @@ public class Philosoph extends Thread {
 				try {
 					Thread.sleep(Constants.TIME_UNTIL_NEW_FORKTRY);
 				} catch (InterruptedException e) {
-					banFromTable();
 				}
 			}
 		}
 		return hasBoth;
+	}
+
+	private void threadBreak(final long timeToBreak) {
+		try {
+			Thread.sleep(timeToBreak);
+		} catch (InterruptedException e) {
+		}
 	}
 
 }
