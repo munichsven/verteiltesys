@@ -3,7 +3,7 @@ package verteilte.edu.hm.huber.schulz.controller;
 
 public class Starter {
 	
-	public static void main(String args[]){
+	public static void main(String args[]) throws InterruptedException{
 		
 		/*
 		Scanner scanner = new Scanner(System.in);
@@ -22,7 +22,9 @@ public class Starter {
 		}
 		*/
 		
-		Controller controller = new Controller(3, 5, 2);
+		Controller controller = new Controller(10, 50, 0);
+		Thread.sleep(60000);
+		System.exit(0);
 	}
 
 }

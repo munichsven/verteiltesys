@@ -13,6 +13,7 @@ public class Philosoph extends Thread {
 	private final int eatMax;
 	private final ArrayList<Seat> seatList;
 	private final Random random;
+	private boolean banned = false;
 
 	public Philosoph(final boolean hungry, final int name,
 			final ArrayList<Seat> seatList) {
@@ -46,10 +47,22 @@ public class Philosoph extends Thread {
 		try {
 			Thread.sleep(Constants.SLEEP_LENGTH);
 		} catch (InterruptedException e) {
-			System.out.println("Fehler schlafen: " + getPhilosophsId()
-					+ "Thread");
-			e.printStackTrace();
+			banFromTable();
 		}
+	}
+
+	private void banFromTable() {
+		banned = true;
+		System.out.println(this.name + " interrupted");
+		try {
+			long start = System.currentTimeMillis();
+			Thread.sleep(Constants.EAT_LENGTH * Constants.BAN_FACTOR);
+			long end = System.currentTimeMillis();
+			System.out.println(this.name + " war verbannt für " + (end-start));
+		} catch (InterruptedException e) {
+			System.out.println("ERROR");
+		}
+		banned = false;
 	}
 
 	/**
@@ -59,9 +72,7 @@ public class Philosoph extends Thread {
 		try {
 			Thread.sleep(Constants.MEDITATE_LENGTH);
 		} catch (InterruptedException e) {
-			System.out.println("Fehler meditieren: " + getPhilosophsId()
-					+ "Thread");
-			e.printStackTrace();
+			banFromTable();
 		}
 	}
 
@@ -93,9 +104,9 @@ public class Philosoph extends Thread {
 		}
 		getForks(crntSeat);
 		try {
-			Thread.sleep(5);
+			Thread.sleep(Constants.EAT_LENGTH);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			banFromTable();
 		}
 		crntSeat.getLeft().getSemaphore().release();
 		crntSeat.getRight().getSemaphore().release();
@@ -122,8 +133,7 @@ public class Philosoph extends Thread {
 					hasLeft = left.getSemaphore().tryAcquire(1,
 							TimeUnit.MILLISECONDS);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					banFromTable();
 				}
 			}
 			while (!hasRight && tries <= Constants.TRIES_TO_GET_FORK) {
@@ -133,8 +143,7 @@ public class Philosoph extends Thread {
 							TimeUnit.MILLISECONDS);
 					tries++;
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					banFromTable();
 				}
 			}
 			hasBoth = hasRight;
@@ -143,8 +152,7 @@ public class Philosoph extends Thread {
 				try {
 					Thread.sleep(Constants.TIME_UNTIL_NEW_FORKTRY);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					banFromTable();
 				}
 			}
 		}
@@ -170,6 +178,14 @@ public class Philosoph extends Thread {
 	 */
 	public boolean isHungry() {
 		return hungry;
+	}
+
+	public boolean isBanned() {
+		return banned;
+	}
+
+	public void setBanned(boolean banned) {
+		this.banned = banned;
 	}
 
 }

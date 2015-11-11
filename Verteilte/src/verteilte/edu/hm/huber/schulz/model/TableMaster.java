@@ -24,10 +24,16 @@ public class TableMaster extends Thread {
 			Arrays.sort(crntCounts);
 			minCount = crntCounts[0];
 			for (Philosoph crntPhil : philList) {
-				if (crntPhil.getEatCounter() > minCount + Constants.DIFFERENZ) {
-					//crntPhil.interrupt();
-					System.out.println("Phil " + crntPhil.getId() + " interrupted mit " + crntPhil.getEatCounter() + " / " + minCount);
+				if (crntPhil.getEatCounter() > minCount + Constants.DIFFERENZ && !crntPhil.isBanned()) {
+					crntPhil.interrupt();
+					System.out.println("Phil " + crntPhil.getPhilosophsId() + " interrupted mit " + crntPhil.getEatCounter() + " / " + minCount);
 				}
+			}
+			try {
+				Thread.sleep(Constants.EAT_LENGTH);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

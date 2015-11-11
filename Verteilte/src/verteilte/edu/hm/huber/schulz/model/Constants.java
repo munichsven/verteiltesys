@@ -2,11 +2,11 @@ package verteilte.edu.hm.huber.schulz.model;
 
 public class Constants {
 
-	public static final long EAT_LENGTH = 100;
+	public static final long EAT_LENGTH = 10;
 	
-	public static final long SLEEP_LENGTH = 1000;
+	public static final long SLEEP_LENGTH = 10;
 	
-	public static final long MEDITATE_LENGTH = 100;
+	public static final long MEDITATE_LENGTH = 5;
 	
 	public static final int DIFFERENZ = 10;
 	
@@ -19,5 +19,7 @@ public class Constants {
 	public static final int EAT_MAX_HUNGRY = 10;
 
 	public static final int EAT_MAX_NORMAL = 3;
+
+	public static final long BAN_FACTOR = 15;
 	
 }
